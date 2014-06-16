@@ -1,0 +1,295 @@
+
+@article{li2013survey,
+  author        = "Li, Xi and Hu, Weiming and Shen, Chunhua and Zhang, Zhongfei and Dick, Anthony and Hengel, Anton van den",
+  title         = "A Survey of Appearance Models in Visual Object Tracking",
+  journal       = "arXiv preprint arXiv:1303.4803",
+  year          = "2013"
+}
+
+@inproceedings{grabner2006real,
+  author        = "Grabner, Helmut and Grabner, Michael and Bischof, Horst",
+  title         = "Real-Time Tracking via On-line Boosting",
+  booktitle     = "Proc. BMVC",
+  volume        = "1",
+  year          = "2006",
+  pages         = "6"
+}
+
+@inproceedings{cehovin2011adaptive,
+  author        = "Cehovin, Luka and Kristan, Matej and Leonardis, Ales",
+  title         = "An adaptive coupled-layer visual model for robust visual tracking",
+  booktitle     = "Proc. Computer Vision (ICCV), 2011 IEEE International Conference on",
+  year          = "2011",
+  pages         = "1363-1370"
+}
+
+@incollection{henriques2012exploiting,
+  author        = "Henriques, Joao F and Caseiro, Rui and Martins, Pedro and Batista, Jorge",
+  title         = "Exploiting the circulant structure of tracking-by-detection with kernels",
+  booktitle     = "Computer Vision--ECCV 2012",
+  publisher     = "Springer",
+  year          = "2012",
+  pages         = "702-715"
+}
+
+@incollection{zhang2012real,
+  author        = "Zhang, Kaihua and Zhang, Lei and Yang, Ming-Hsuan",
+  title         = "Real-time compressive tracking",
+  booktitle     = "Computer Vision--ECCV 2012",
+  publisher     = "Springer",
+  year          = "2012",
+  pages         = "864-877"
+}
+
+%@inproceedings{zhangfast,
+%  author        = "Zhang, Kaihua and Zhang, Lei and Yang, Ming-Hsuan",
+%  title         = "Fast Compressive Tracking",
+%  journal       = "Proc. IEEE_J_PAMI",
+%  year          = "2014"
+%}
+
+@article{zhangfast,
+  title={Fast Compressive Tracking},
+  author={Zhang, Kaihua and Zhang, Lei and Yang, Ming-Hsuan}
+}
+
+@inproceedings{hare2011struck,
+  author        = "Hare, Sam and Saffari, Amir and Torr, Philip HS",
+  title         = "Struck: Structured output tracking with kernels",
+  booktitle     = "Proc. Computer Vision (ICCV), 2011 IEEE International Conference on",
+  year          = "2011",
+  pages         = "263-270"
+}
+
+@article{zhang2012realmil,
+  author        = "Zhang, Kaihua and Song, Huihui",
+  title         = "Real-time visual tracking via online weighted multiple instance learning",
+  journal       = "Pattern Recognition",
+  year          = "2012"
+}
+
+@article{babenko2011robust,
+  author        = "Babenko, Boris and Yang, Ming-Hsuan and Belongie, Serge",
+  title         = "Robust object tracking with online multiple instance learning",
+  journal       = IEEE_J_PAMI,
+  volume        = "33",
+  number        = "8",
+  year          = "2011",
+  pages         = "1619-1632"
+}
+
+@inproceedings{WuLimYang13,
+  author        = "Yi Wu and Jongwoo Lim and Ming-Hsuan Yang",
+  title         = "Online Object Tracking: A Benchmark",
+  booktitle     = "Proc. IEEE Conference on Computer Vision and Pattern Recognition (CVPR)",
+  year          = "2013"
+}
+
+@article{zhang2013fast,
+  title={Fast Tracking via Spatio-Temporal Context Learning},
+  author={Zhang, Kaihua and Zhang, Lei and Yang, Ming-Hsuan and Zhang, David},
+  journal={arXiv preprint arXiv:1311.1939},
+  year={2013}
+}
+
+@inproceedings{bolme2010visual,
+  author        = "Bolme, David S and Beveridge, J Ross and Draper, Bruce A and Lui, Yui Man",
+  title         = "Visual object tracking using adaptive correlation filters",
+  booktitle     = "Proc. Computer Vision and Pattern Recognition (CVPR), 2010 IEEE Conference on",
+  year          = "2010",
+  pages         = "2544-2550"
+}
+
+@incollection{trzcinski2012efficient,
+  author        = "Trzcinski, Tomasz and Lepetit, Vincent",
+  title         = "Efficient discriminative projections for compact binary descriptors",
+  booktitle     = "Computer Vision--ECCV 2012",
+  publisher     = "Springer",
+  year          = "2012",
+  pages         = "228-242"
+}
+@article{calonder2012brief,
+  author        = "Calonder, Michael and Lepetit, Vincent and Ozuysal, Mustafa and Trzcinski, Tomasz and Strecha, Christoph and Fua, Pascal",
+  title         = "{BRIEF}: Computing a local binary descriptor very fast",
+  journal       = IEEE_J_PAMI,
+  volume        = "34",
+  number        = "7",
+  year          = "2012",
+  pages         = "1281-1298"
+}
+
+@inproceedings{rublee2011orb,
+  author        = "Rublee, Ethan and Rabaud, Vincent and Konolige, Kurt and Bradski, Gary",
+  title         = "{ORB}: an efficient alternative to {SIFT} or {SURF}",
+  booktitle     = "Proc. Computer Vision (ICCV), 2011 IEEE International Conference on",
+  year          = "2011",
+  pages         = "2564-2571"
+}
+
+@inproceedings{leutenegger2011brisk,
+  author        = "Leutenegger, Stefan and Chli, Margarita and Siegwart, Roland Y",
+  title         = "{BRISK}: Binary robust invariant scalable keypoints",
+  booktitle     = "Proc. Computer Vision (ICCV), 2011 IEEE International Conference on",
+  year          = "2011",
+  pages         = "2548-2555"
+}
+
+@article{lowe2004distinctive,
+  author        = "Lowe, David G",
+  title         = "Distinctive image features from scale-invariant keypoints",
+  journal       = "International journal of computer vision",
+  volume        = "60",
+  number        = "2",
+  year          = "2004",
+  pages         = "91-110"
+}
+
+
+@article{chenblessing,
+  author        = "Chen, Dong and Cao, Xudong and Wen, Fang and Sun, Jian",
+  title         = "Blessing of Dimensionality: High-dimensional Feature and Its Efficient Compression for Face Verification",
+}
+
+@inproceedings{duan2009boosting,
+  author        = "Duan, Genquan and Huang, Chang and Ai, Haizhou and Lao, Shihong",
+  title         = "Boosting associated pairing comparison features for pedestrian detection",
+  booktitle     = "Proc. Computer Vision Workshops (ICCV Workshops), 2009 IEEE 12th International Conference on",
+  year          = "2009",
+  pages         = "1097-1104"
+}
+
+@article{shoujue2008first,
+  author        = "Shoujue, Wang and Jiangliang, Lai",
+  title         = "First step to multi-dimensional space biomimetic informatics {M}",
+  journal       = "National Defense Industry Press, Beijing",
+  year          = "2008"
+}
+@article{har2012approximate,
+  author        = "Har-Peled, Sariel and Indyk, Piotr and Motwani, Rajeev",
+  title         = "Approximate Nearest Neighbor: Towards Removing the Curse of Dimensionality",
+  journal       = "Theory OF Computing",
+  volume        = "8",
+  number        = "1",
+  year          = "2012",
+  pages         = "321-350"
+}
+
+@article{everingham2010pascal,
+  author        = "Everingham, Mark and Van Gool, Luc and Williams, Christopher KI and Winn, John and Zisserman, Andrew",
+  title         = "The pascal visual object classes (voc) challenge",
+  journal       = "International journal of computer vision",
+  volume        = "88",
+  number        = "2",
+  year          = "2010",
+  pages         = "303-338"
+}
+
+@inproceedings{yagnik2011power,
+  author        = "Yagnik, Jay and Strelow, Dennis and Ross, David A and Lin, Ruei-sung",
+  title         = "The power of comparative reasoning",
+  booktitle     = "Proc. Computer Vision (ICCV), 2011 IEEE International Conference on",
+  year          = "2011",
+  pages         = "2431-2438"
+}
+@article{ozuysal2010fast,
+  author        = "Ozuysal, Mustafa and Calonder, Michael and Lepetit, Vincent and Fua, Pascal",
+  title         = "Fast keypoint recognition using random ferns",
+  journal       = IEEE_J_PAMI,
+  volume        = "32",
+  number        = "3",
+  year          = "2010",
+  pages         = "448-461"
+}
+@inproceedings{zheng2005comparative,
+  author        = "Zheng, Fei and Webb, Geoffrey I",
+  title         = "A comparative study of semi-naive bayes methods in classification learning",
+  booktitle     = "Proc. Proceedings of the fourth Australasian data mining conference (AusDM05)",
+  year          = "2005",
+  pages         = "141-156"
+}
+
+@inproceedings{dean2013fast,
+  author        = "Dean, Thomas and Ruzon, Mark A and Segal, Mark and Shlens, Jonathon and Vijayanarasimhan, Sudheendra and Yagnik, Jay",
+  title         = "Fast, Accurate Detection of 100,000 Object Classes on a Single Machine",
+  booktitle     = "Proc. IEEE Conference on Computer Vision and Pattern Recognition",
+  year          = "2013"
+}
+
+@article{felzenszwalb2010object,
+  author        = "Felzenszwalb, Pedro F and Girshick, Ross B and McAllester, David and Ramanan, Deva",
+  title         = "Object detection with discriminatively trained part-based models",
+  journal       = IEEE_J_PAMI,
+  volume        = "32",
+  number        = "9",
+  year          = "2010",
+  pages         = "1627-1645"
+}
+
+@inproceedings{zhu2010latent,
+  author        = "Zhu, Long and Chen, Yuanhao and Yuille, Alan and Freeman, William",
+  title         = "Latent hierarchical structural learning for object detection",
+  booktitle     = "Proc. Computer Vision and Pattern Recognition (CVPR), 2010 IEEE Conference on",
+  year          = "2010",
+  pages         = "1062-1069"
+}
+
+@article{jordan2002discriminative,
+  author        = "Jordan, A",
+  title         = "On discriminative vs. generative classifiers: A comparison of logistic regression and naive bayes",
+  journal       = "Advances in neural information processing systems",
+  volume        = "14",
+  year          = "2002",
+  pages         = "841"
+}
+
+@inproceedings{kalal2010pn,
+  author        = "Kalal, Zdenek and Matas, Jiri and Mikolajczyk, Krystian",
+  title         = "Pn learning: Bootstrapping binary classifiers by structural constraints",
+  booktitle     = "Proc. Computer Vision and Pattern Recognition (CVPR), 2010 IEEE Conference on",
+  year          = "2010",
+  pages         = "49-56"
+}
+
+@inproceedings{adam2006robust,
+  author        = "Adam, Amit and Rivlin, Ehud and Shimshoni, Ilan",
+  title         = "Robust fragments-based tracking using the integral histogram",
+  booktitle     = "Proc. Computer Vision and Pattern Recognition, 2006 IEEE Computer Society Conference on",
+  year          = "2006",
+  pages         = "798-805"
+}
+
+@article{ross2008incremental,
+  author        = "Ross, David A and Lim, Jongwoo and Lin, Ruei-Sung and Yang, Ming-Hsuan",
+  title         = "Incremental learning for robust visual tracking",
+  journal       = "International Journal of Computer Vision",
+  volume        = "77",
+  number        = "1-3",
+  year          = "2008",
+  pages         = "125-141"
+}
+
+@article{mei2011robust,
+  author        = "Mei, Xue and Ling, Haibin",
+  title         = "Robust visual tracking and vehicle classification via sparse representation",
+  journal       = IEEE_J_PAMI,
+  volume        = "33",
+  number        = "11",
+  year          = "2011",
+  pages         = "2259-2272"
+}
+
+@inproceedings{kwon2010visual,
+  author        = "Kwon, Junseok and Lee, Kyoung Mu",
+  title         = "Visual tracking decomposition",
+  booktitle     = "Proc. Computer Vision and Pattern Recognition (CVPR), 2010 IEEE Conference on",
+  year          = "2010",
+  pages         = "1269-1276"
+ }
+
+
+@inproceedings{learned2012distribution,
+  author        = "Learned-Miller, Erik G and Lara, Laura Sevilla",
+  title         = "Distribution fields for tracking",
+  booktitle     = "Proc. IEEE Conference on Computer Vision and Pattern Recognition",
+  year          = "2012"
+}

@@ -1,0 +1,1214 @@
+
+%% icpr_DSRtracker.tex
+%% V1.0
+%% 2013/12/15
+%% by yangxian
+
+%%*************************************************************************
+
+\documentclass[conference,a4paper]{IEEEtran}
+%\documentclass[conference]{IEEEtran}
+
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{bm}
+\usepackage{algorithmic}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{verbatim}
+
+\renewcommand{\algorithmicrequire}{\textbf{Initialization:}}% 改成后面的小标题
+\renewcommand{\algorithmicensure}{\textbf{Input:}}
+\renewcommand{\algorithmiclastcon}{\textbf{Output:}}
+
+
+% *** GRAPHICS RELATED PACKAGES ***
+%
+\ifCLASSINFOpdf
+  % \usepackage[pdftex]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../pdf/}{../jpeg/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+\else
+  % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
+  % will default to the driver specified in the system graphics.cfg if no
+  % driver is specified.
+  % \usepackage[dvips]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../eps/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.eps}
+\fi
+% graphicx was written by David Carlisle and Sebastian Rahtz. It is
+% required if you want graphics, photos, etc. graphicx.sty is already
+% installed on most LaTeX systems. The latest version and documentation can
+% be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/required/graphics/
+% Another good source of documentation is "Using Imported Graphics in
+% LaTeX2e" by Keith Reckdahl which can be found as epslatex.ps or
+% epslatex.pdf at: http://www.ctan.org/tex-archive/info/
+%
+% latex, and pdflatex in dvi mode, support graphics in encapsulated
+% postscript (.eps) format. pdflatex in pdf mode supports graphics
+% in .pdf, .jpeg, .png and .mps (metapost) formats. Users should ensure
+% that all non-photo figures use a vector format (.eps, .pdf, .mps) and
+% not a bitmapped formats (.jpeg, .png). IEEE frowns on bitmapped formats
+% which can result in "jaggedy"/blurry rendering of lines and letters as
+% well as large increases in file sizes.
+%
+% You can find documentation about the pdfTeX application at:
+% http://www.tug.org/applications/pdftex
+
+
+
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+%
+% paper title
+% can use linebreaks \\ within to get better formatting as desired
+\title{Real-time Tracking via \\ Deformable Structure Regression Learning}
+
+
+
+
+% conference papers do not typically use \thanks and this command
+% is locked out in conference mode. If really needed, such as for
+% the acknowledgment of grants, issue a \IEEEoverridecommandlockouts
+% after \documentclass
+
+% for over three affiliations, or if they all won't fit within the width
+% of the page, use this alternative format:
+%
+\begin{comment}
+\author{\IEEEauthorblockN{Xian Yang}
+\IEEEauthorblockA{Institute of Semiconductors, CAS.\\
+Beijing, China\\
+xyang2011@sinano.ac.cn}
+\and
+\IEEEauthorblockN{Quan Xiao}
+\IEEEauthorblockA{SINANO, CAS.\\
+Suzhou, China\\
+qxiao2012@sinano.ac.cn}
+\and
+\IEEEauthorblockN{Peizhong Liu and Shoujue Wang}
+\IEEEauthorblockA{College of Engineering, Huaqiao University\\
+Fujian, China\\
+pzliu@hqu.edu.cn}}
+\end{comment}
+
+\author{\IEEEauthorblockN{Xian Yang\IEEEauthorrefmark{1},
+Quan Xiao\IEEEauthorrefmark{2},
+Shoujue Wang\IEEEauthorrefmark{2} and
+Peizhong Liu\IEEEauthorrefmark{3}}
+\IEEEauthorblockA{\IEEEauthorrefmark{1}Lab of Artificial Neural Networks, Institute of Semiconductors, CAS. China}
+\IEEEauthorblockA{\IEEEauthorrefmark{2}Lab of High Dimensional Biomimetic Informatics and its Applications, SINANO, CAS. China}
+\IEEEauthorblockA{\IEEEauthorrefmark{3}College of Engineering, Huaqiao University, Fujian, China\\
+xyang2011@sinano.ac.cn, qxiao2012@sinano.ac.cn,  sjwang2008@sinano.ac.cn, pzliu@hqu.edu.cn}}
+
+
+
+% use for special paper notices
+%\IEEEspecialpapernotice{(Invited Paper)}
+
+
+
+
+% make the title area
+\maketitle
+
+
+\begin{abstract}
+%\boldmath
+Visual object tracking is a challenging task
+because designing an effective and efficient appearance model is difficult.
+Current online tracking algorithms treat tracking as a classification task
+and use labeled samples to update appearance model.
+However, it is not clear how to evaluate instance's confidence belong to the object.
+In this paper, we propose a simple and efficient tracking algorithm
+with a deformable structure appearance.
+In our method, model updates with continuous labeled samples which are dense sampling.
+In order to improve the accuracy,
+we introduce a couple-layer regression model
+which prevents negative background from impacting on the model learning
+rather than traditional classification.
+%Coupled-layer appearance regression model is more accurate than %classification model for model learning.
+The proposed DSR tracker runs in real-time
+and performs favorably against state-of-the-art trackers on various challenging sequences.
+\end{abstract}
+% IEEEtran.cls defaults to using nonbold math in the Abstract.
+% This preserves the distinction between vectors and scalars. However,
+% if the conference you are submitting to favors bold math in the abstract,
+% then you can use LaTeX's standard command \boldmath at the very start
+% of the abstract to achieve this. Many IEEE journals/conferences frown on
+% math in the abstract anyway.
+
+% no keywords
+
+
+
+
+% For peer review papers, you can put extra information on the cover
+% page as needed:
+% \ifCLASSOPTIONpeerreview
+% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
+% \fi
+%
+% For peerreview papers, this IEEEtran command inserts a page break and
+% creates the second title. It will be ignored for other modes.
+\IEEEpeerreviewmaketitle
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Introduction
+
+\section{Introduction}
+\label{sec:intro}
+
+Visual object tracking remains a challenging research topic in computer vision
+during the past decades \cite{li2013survey}
+caused by many factors such as appearance variations,
+real-time processing requirements and
+low-quality camera sensors.
+%说一下跟踪目前的几个难点
+It is difficult to deal with due to
+1) prior target information is little and usually got from the first frame;
+2) the large appearance changes of target object and the background;
+3) the boundary between the object of interest and the background is ambiguous.
+
+A typical tracking system consists of three main components:
+appearance modeling, motion estimation and search strategy.
+%以上这些可以改为众多学者更关注appearance modeling
+% Among many approach, tracking-by-detection is the most successful,
+How to design a robust appearance model is the crucial point in tracking system.
+This is generally separated into two parts:
+visual representation and learner modeling \cite{li2013survey}.
+Visual representation focuses on how to construct robust features for object expression.
+Learner modeling concentrates on building models
+which can adapt online to object appearance change.
+%说一下我们的接口用的方法
+In our tracker, the appearance model is implemented
+by a 2-layer deformable structure model trained with Brief feature as object expression.
+Learning model combines with weak regression ferns as appearance and shape model.
+Search strategy is fast dense sampling search.
+
+Many proposed methods treat the tracking problem as a classification task \cite{grabner2006real,babenko2011robust,zhang2012realmil,zhang2012real,zhangfast}.
+These methods need a set of labeled training instances
+to determine the decision boundary for separating the target object.
+However, it is not clear to evaluate instance label.
+%说一下我们这篇的做法
+In this paper, we argue that classifier model is suboptimal
+due to the different objective between classification and the goal of tracking.
+Moreover, it is unreliable that a large number of training samples need to be selected and labeled.
+%the heuristic and unreliable step of training sample selection and labels.
+To avoid it, structured output prediction \cite{hare2011struck} has been applied and got an outstand performance in recent evaluation \cite{WuLimYang13}.
+% 说Struck从sample的角点，就说他们结构输出，但我认为更重要的是其中的样本权重
+% 进而引出efk-fft，样本权重，很简单效果很好
+Researchers also proposed dense sampling
+to study generative learning model \cite{bolme2010visual,henriques2012exploiting}.
+These methods didn't limit samples to binary labels,
+blurred the line between classification and regression,
+and work efficiently.
+It shows that dense sampling with continuous outputs for regression model is a promising direction.
+%受structure和Spatio-Temporal Context方法的启发，提出了我们的方法。
+%简要介绍一下我们的方法，并且我们的方法在实验中取得了不错的效果
+Inspired by the above, we propose a deformable structure regression (DSR) tracker.
+We build an appearance model of context and constraint information
+by a 2-layer deformable structure model,
+and propose a object location confidence regression for model update.
+Experiments on many challenging sequences demonstrate that DSR tracker performs favorably
+when compared with several state-of-the-art algorithms.
+
+\begin{figure}[tp]
+\includegraphics[scale=1]{fig_feature}
+\caption{Illustration of 2-layer deformable structure appearance model.
+The top part is the root layer representation,
+and the bottom part shows the local layer representation.}
+\label{fig:feature}
+\end{figure}
+
+In summary, we focus on a tracking algorithm with
+efficient and simple binary feature extraction,
+dense sampling strategy with continuous label outputs
+and learning model with deformable structure regression.
+The main contributions of this paper are as follows:
+
+1) A 2-layer deformable structure appearance model to represent the object robustly;
+
+2) A fast dense sampling strategy to extractadam2006robust object feature for training and detection;
+
+3) A Coupled-layer Regression learning model combines root-part and appearance-shape information.
+
+The rest of the paper is organized as follows:
+we discuss related work in Section \ref{sec:Related Works}.
+Section \ref{sec:Tracking structure} introduces our DSR tracker with new appearance model and learning algorithm,
+and in Section \ref{sec:experiments} we perform extensive experimental comparison with the state-of-the-art.
+The conclusion is drawn in Section \ref{sec:Conclusion}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Related Works
+
+\section{Related Works}
+\label{sec:Related Works}
+
+%Our DSR object tracker incorporates ideas from prior work on tracking-by-detection,
+%deformable parts models, and Brief feature.
+%We briefly review relevant prior work on these three topics.
+This section reviews the related approaches for the components of our tracker.
+We consider that the recent approaches provide good mechanism for building a tracker.
+
+\subsection{Tracking-by-detection}
+
+%Tracking-by-detection has become popular handling visual tracking problem recently %\cite{grabner2006real,zhang2012real,zhang2012realmil,hare2011struck,babenko2011robust}.
+Tracking-by-detection is a algorithm
+which attempts to learn a classifier to distinguish a target object from its local background \cite{grabner2006real}.
+There are some issues need to be raised.
+Firstly, the classifier is to predict instance labels
+which is different from the goal of tracking to estimate object location.
+Some approaches try to overcome this problem
+by structure output \cite{hare2011struck}
+or context learning \cite{bolme2010visual,henriques2012exploiting,zhang2013fast}.
+Secondly, training samples are equally weighted and labeled based on intuitions.
+Some attempts are proposed to solve it \cite{babenko2011robust,zhang2012realmil,zhangfast}.
+The learning model which we present
+tries to overcome all these problem with couple-layer regression framework.
+
+\begin{comment}
+Researchers have proposed to pose tracking as the select discriminative features
+from a candidate feature pools to conduct learning model \cite{grabner2006real}.
+To deal with the single-instance visual representation express object localization ambiguously,
+multiple instance learning was used for appearance modeling \cite{babenko2011robust}.
+Zhang et al. incorporated the sample importance information into model learning process \cite{zhang2012realmil}.
+However, this methods need to construct feature pools for feature selection,
+which leading to a low computational speed.
+%说张凯华专注于feature extraction, 其他文献
+To avoid such problem, Zhang et al. also proposed an appearance model based on
+features extracted in the compressed domain\cite{zhang2012real}.
+\end{comment}
+
+\subsection{Deformable parts models}
+
+%介绍一下dpm
+A deformable parts model (DPM) \cite{felzenszwalb2010object} consists of a set of part filters,
+a set of deformations that provide geometric information
+regarding the expected placement of parts in a patch,
+a scoring function that provides the basis
+for combining the deformations and part-filter responses,
+and a strategy to find the given target\cite{dean2013fast}.
+%提出dpm的part的划定需要复杂的训练不适合跟踪任务，所以我们这里采用类似这篇的方案,取得了足够好的效果
+Felzenszwalb et al.\cite{felzenszwalb2010object} describe a complex training procedure
+for the parts structure selections and initializations.
+%We need simple and efficient structure for tracking application.
+However, in tracking application, so complex online training model is unacceptable.
+In our implementation, simple and efficient part structure settings
+are designed for online updating.
+Experiments show the simple part structure is sufficient to obtain state-of-the-art performance.
+%In this paper, we simplify the part structure settings
+%and show the simple part structure is sufficient to obtain state of the art performance.
+%Similar approach has been successful applied in detection \cite{zhu2010latent}.
+
+\subsection{Brief feature and Ferns}
+
+% 说一下跟踪的应用中使用的特征都是简单的高效的，通常hog，haar
+% 说一下binary 特征的兴起
+%In this section, we present our feature extraction method in details.
+Recently, numerous binary descriptors have been proposed
+which compute directly on image patches \cite{rublee2011orb,leutenegger2011brisk,calonder2012brief}.
+They are fast to compute, with a very small memory footprint and perform well.
+These characteristic shows such descriptors are perfect candidates for real-time applications.
+However, binary features are rare used in visual tracking systems.
+Most of tracking systems use general Haar-like features or HOG feature as image representation
+\cite{grabner2006real,babenko2011robust}.
+This is because these binary descriptors tend to be less robust,
+ less accurate and more sensitive than complicated approaches such as SIFT \cite{lowe2004distinctive}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ % 说一下从高维空间的角度出发，对brief特征的理解，提一下老板的思想
+In this paper, we use Brief \cite{calonder2012brief} as object representation.
+Our previous works \cite{shoujue2008first} also regarded image pixels space as a hypercube,
+and thought that Brief is a set of random hyperplane $\boldmath{H} = \{h_1,\ldots,h_m\} \in \mathbb{R}^n$.
+
+ %说一下regression fern
+To make use of binary feature efficiently and flexibility,
+we followed and improved the implementation of \cite{ozuysal2010fast}
+for model learning.
+% 介绍一下fern
+Ferns is proposed as classifier for fast keypoints recognition in \cite{ozuysal2010fast}.
+% 我们将其用在回归，而非分类
+We modify the fern to adapt to regression learning
+which is discussed in detail in Section \ref{subsec:Learning}.
+
+\section{Tracking Structure}
+\label{sec:Tracking structure}
+
+\subsection{Appearance model}
+%介绍一下2层树结构的appearance model，树的结构，3*3的part model，和隐性变量
+We represent the object by a 2-layer deformable structure model.
+It is shown in Fig. \ref{fig:feature}.
+The deformable structure model is associated with latent variables $h = (V, \vec{\bm p})$.
+$V$ is the index that $V=a$ is the root, $V=b_{i=1,2\dots}$ is the part,
+and $\vec{\bm p}$ is the position of the models.
+The root layer represents the entire target.
+The root $(a,\vec{\bm p})$ has 9 child parts $(b_i,\vec{\bm p})$ at the local layer
+in a 3 by 3 grid layout,
+each of which represents one part of the target.
+To simplify, the number of layers and the structure are the same for any target.
+%介绍一下我们使用的特征形式
+For a sample, label is continuous which denote the confidence of an object location.
+The feature vector is defined as follow:
+\begin{equation}
+\bm\Phi(\bm x,y,h) = \left(\bm\Phi_B\left(\bm x,h\right),\bm\Phi_S\left(h\right)\right)
+\end{equation}
+%介绍一下使用的binary特征和对他的改进
+
+$\bm\Phi_B(\bm x,h)$ are the Brief descriptor.
+We followed the implementations of \cite{calonder2012brief} to calculate the parts feature.
+We build a image pyramid of the object to calculate the root feature
+which is shown in Fig. \ref{fig:feature}.
+With the multi-scale, we increase the dimension of the feature further.
+We represent root feature $\bm\Phi_{Broot}(\bm x,h) \in \mathbb{R}^n$ where $n = (whl)^s$.
+The dimensionality $n$ is typically in the order of $10^8$ to $10^{12}$.
+%Figure XXX(b) show our feature descriptors at different layers.
+% 介绍一下这个特征将原image patch 映射到一个高维中
+% 高维特征对于获得好的cv效果是必要的
+This high-dimensional feature is necessary to obtain high performance \cite{chenblessing}.
+And similar approaches have been successful applied in detection and verification \cite{chenblessing,duan2009boosting}.
+
+%说一下shape约束的细节
+The $\bm\Phi_S(h)$ are shape constraint $\bm\Phi_S(\vec{\bm p}_{a},\vec{\bm p}_b), \forall a,b \in Ch(a)$
+%\[
+%\Phi_S(\vec{p}_{a},\vec{p}_b), \forall a,b \in Ch(a)
+%\]
+which encode the root-local pairwise spacial relationship.
+In detail, the shape constraint for a root-local pair $(a,b)$
+are defined as
+\[
+\bm\Phi_S(\vec{\bm p}_a,\vec{\bm p}_b)=(\Delta{\mu},\Delta{\nu},\Delta{\mu^2},\Delta{\nu^2})
+\]
+where $(\Delta{\mu},\Delta{\nu})$ is displacement of part $b$ relative to
+its reference position by its root $a$.
+
+%介绍一下我们score的计算方法
+Next, we define the score of our appearance model with two parts:
+1) appearance score that measure the location confidence;
+2) deformation score that measure the shape and constraint of the deformable-structure.
+Mathematically, the total score is defined as:
+\begin{multline}
+\label{eq:score}
+S(\bm x,h) = w\cdot \bm H\left(\bm\Phi_{Broot}\left(\bm x,a\right)\right)\\
++ \sum_{i=1}^9\left[w\cdot \bm H\left(\bm\Phi_{Bpart}\left(\bm x,b_i\right)\right)+\bm w\cdot\bm\Phi_S\left(a,b_i\right)\right]
+\end{multline}
+where $\bm H\left(\bm\Phi_B\left(\bm x,V\right)\right)$ is the confidence score of the object location,
+%%%%%%%%%%%%%%%%下面这句可能引用要改一下
+Section \ref{subsec:Learning} discuss it in detail.
+
+%%%%%%%%%%%%%%%%%%%%
+%这里应该还需要补充对这个公式的解释
+
+%是否还需补充对这种appearance model 的认识，理论分析讨论其抗遮挡的鲁棒性，不需要补充了，放到3.4 部分去讨论
+
+\subsection{Detection}
+\label{subsec:Detection}
+
+\begin{figure}[tp]
+\includegraphics [scale=1]{fig_extraction}
+\caption{Illustration of fast feature extraction for dense sampling.}
+\label{fig:extraction}
+\end{figure}
+
+Rather than searching the sliding window for detection,
+we proposed a fast feature representation method for dense sampling.
+% 我这里把采样和特征提取结合为一步
+Different from sampling in advance and then extract feature for each sample,
+we combine sampling and feature extraction as one step which is shown in Fig. \ref{fig:extraction}.
+When $(t+1)$-th frame arrived,
+we fast crop dense samples $\mathbf{X^{\beta}}=\left\{\bm x| \left|I_t(\bm x)-I_t(\bm x^*)\right|<\beta\right\}$
+surrounding the old object location $I_t(\bm x^*)$.
+Then we apply the regression ferns to find the parts location
+with the maximum confidence
+\[
+\bm x_{i,t+1}^*=\arg\max \bm H\left(\bm\Phi\left(\bm x_{i,t},h_{i,t}\right)\right)
+\]
+Based on the parts location, we can find the root position according to
+\begin{equation}
+\label{eq:detection}
+\begin{split}
+\bm x_{t+1}^* &= \arg\max S(\bm x,h) \\
+&= \arg\max \{ {w\cdot \bm H\left(\bm\Phi_{Broot}\left(\bm x,a\right)\right)}\\
+&{+\sum_{i=1}^9\left[w\cdot \bm H\left(\bm\Phi_{Bpart}\left(\bm x,b_i\right)\right)+\bm w\cdot\bm\Phi_S\left(a,b_i\right)\right]} \}
+\end{split}
+\end{equation}
+With the new location $\bm x_{t+1}^*$, we can train and update our tracker.
+
+\subsection{Learning}
+\label{subsec:Learning}
+
+Inspired by \cite{cehovin2011adaptive,henriques2012exploiting,ozuysal2010fast},
+we construct a 2-layer deformable structure learning model.
+We dense crops patches $\mathbf{X^{\alpha}}=\left\{\bm x| \left|I_t(\bm x)-I_t(\bm x^*)\right|<\alpha\right\}$
+where $\bm x^*$ is the object location at the $t$-th frame.
+We represent these patches feature $\bm\Phi(x)$ with the method that we proposed in Section \ref{subsec:Detection}.
+
+\subsubsection{Confidence map}
+%\textbf{Confidence Map.}
+%说一下confidence map
+Most tracker treat learning model as a classification \cite{li2013survey}
+with examples pairs $(\bm x,y)$ where $y=\pm 1$ is the label.
+However, equally weighted samples confuse the classifier \cite{zhang2012realmil}.
+In this paper, we don't limit discrete label for the samples
+and measure the continuous label with the confidence map.
+The confidence map is modeled with the distance between target center and sample position as follow:
+\begin{equation}
+\label{eq:confidence_map}
+y(\bm x)=1-\theta\left|\bm x-\bm x^*\right|
+\end{equation}
+where $\theta$ is scale factor.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%是否还需要补充内容,补充一下我们选择这种model的理由，为了配合PR的评价标准
+
+\subsubsection{Local layer}
+%\textbf{Local Layer.}
+To adapt to our deformable-structure appearance model,
+we use different strategy for 2 layer model.
+In the local layer,
+for each sample part pair consist of feature and label $(\bm\Phi_{Bpart}(\bm x),y)$,
+we train a linear regression fern to return the probability that the sample belongs to the object.
+To balance the storing requirement and performance \cite{ozuysal2010fast}
+we partition feature $\bm\Phi^N(\bm x)$ into $M$ groups of size $S=\frac{N}{M}$.
+Each group $\bm\Phi_m^S$ are regression ferns and we compute the probability as follow:
+\begin{equation}
+\label{eq:fern}
+\bm H\left(\bm\Phi_m^s\left(\bm x\right)=k\right)=\bar y=\frac{\sum^N y}{N_k}
+\end{equation}
+where $N_k$ is the sample number of $\bm\Phi(\bm x)=k$.
+%说一下update model
+When a new frame comes, the part regression fern is updated incrementally
+\begin{equation}
+\label{eq:P_update}
+%\begin{alignat}{1}
+%\begin{gather}
+\bm H_{t+1}\left(\bm\Phi_m^s\left(\bm x\right)\right)=
+(1-\gamma)\bm H_t\left(\bm\Phi_m^s\left(\bm x\right)\right)+\gamma \bm H_{t,new}\left(\bm\Phi_m^s\left(\bm x\right)\right)\\
+%\bm w_{t+1}=(1-\lambda)\bm w_{t}+\lambda \bm w_{t,new}
+%\end{alignat}
+%\end{gather}
+\end{equation}
+where $\gamma >0$ is the learning rate for update.
+Many weak responses are combined in a Naive Bayesian \cite{jordan2002discriminative} way.
+\begin{equation}
+\begin{split}
+\bm H\left(\bm\Phi\left(\bm x\right)\right) &=
+\bm H\left(\bm\Phi_1^S\left(\bm x\right),\bm\Phi_2^S\left(\bm x\right),\dots,\bm\Phi_M^S\left(\bm x\right)\right)\\
+&= \prod_{l=1}^M\bm H\left(\bm\Phi_l^S\left(\bm x\right)\right)
+\end{split}
+\end{equation}
+Since feature and ferns is simple,
+enlarging random projections $S$ and ferns number $M$ is required for accurate regression.
+However, the computational complexity will be prohibitively high for real-time objection tracking.
+For balance, we set $M_{root}=20, M_{part}=15$ and $S=8$ in our experiments.
+
+\subsubsection{Root layer}
+%\textbf{Root Layer.}
+In the root layer,
+our goal is to find optimal object location which is defined by confidence score in (\ref{eq:detection}).
+To calculate the confidence score,
+we divided it into two parts: the probability ferns of the root layer,
+the weights of deformable-structure ferns and the weights of the shape feature.
+We handle first problem as the same as the local layer.
+The second problem can be written as
+\begin{equation}
+\bm w=\arg\min \left\{\sum_{i=1}^N\left[S\left(\bm x,h\right)-y\right]^2+\frac{\lambda}{2}\|w\|^2\right\}
+\end{equation}
+where $S(\bm x,h)$ is defined by (\ref{eq:score}).
+%讲一下如何计算w这个数学问题
+This is a standard linear regression.
+We consider the sub-gradient of the above objective.
+\begin{equation}
+\nabla_t=\lambda \bm w_t+\frac{1}{N}\sum_{i=1}^N\left\{\left[S\left(\bm x,h\right)-y\right]\cdot \bm z\right\}
+\end{equation}
+where $\bm z=\bm H(\Phi_B)$ or $\bm z=\Phi_S$ according to $\bm w$.
+We then update $\bm w_{t+1}=\bm w_t-\eta \nabla_t $ with step size $\eta=\frac{1}{\lambda t}$,
+it can be written as
+\begin{equation}\label{eq:w_update}
+\bm w_{t+1}=(1-\eta\lambda)\bm w_t-\frac{\eta}{N}\sum_{i=1}^N \left\{\left[S\left(\bm x,h\right)-y\right]\cdot \bm z\right\}
+\end{equation}
+
+%\subsubsection*{Update}
+%\textbf{Update.}
+
+
+\subsection{Analysis and Discussion}
+\label{subsec:discussion}
+
+We note that 2-layer deformable structure and simple regression model
+are two prime characteristics of our proposed tracker.
+Our algorithm is illustrated in Algorithm \ref{algo:DSR}.
+In addition, our tracker achieves robust performance as discussed below:
+
+\subsubsection{Robustness to occlusion}
+%\textbf{Robustness to Occlusion.}
+\begin{figure}
+\includegraphics[scale=0.12]{fig_occlusion}
+\caption{Illustration of why our appearance model can handle occlusion.
+%The regression ferns in two frames are similar in the root layer.
+%The part ferns are local influenced by the occlusion,
+%but the unobstructed parts and the shape constraint work to prevent drift.}
+}
+\label{fig:occlusion}
+\end{figure}
+As shown in Fig. \ref{fig:occlusion}, our proposed algorithm is robust to heavy occlusion
+as most of part appearance models are not occluded.
+These unobstructed part models prevent the tracker drift away.
+In addition, the root regression fern
+is slightly affected by occlusion (See Fig. \ref{fig:occlusion}),
+which demonstrates that Brief descriptor is effective in handling appearance variation.
+
+\subsubsection{Robustness to ambiguity of the distractor}
+%\textbf{Robustness to Ambiguity of the Distractor.}
+If tracking the target only base on its appearance information,
+the tracker will be distracted easily because of similar appearances.
+Multiple instance learning \cite{babenko2011robust} schemes to alleviate this problem.
+%But too many simple is not practical in the actual tracking system.
+Our dense sampling strategy solve the problem.
+Different from most tracker treat the positive samples equally,
+we give each sample a continuous label
+to accurately represent the sample probability belong to the target,
+and replace the classifier with regression.
+These strategy help our tracker distinguish target from distractor.
+
+\begin{comment}
+% 特征的快速提取方法（和密采样结合）
+\subsection{Dense sampling and fast feature extraction}
+% 一般的跟踪算法在更新训练的时候，只取少量样本，因为计算量巨大
+In general tracking-by-detection algorithm, only small random sample used for training model
+because computational constraints \cite{babenko2011robust,grabner2006real,zhang2012real}.
+% 密采样首先被提出，在ESK 中,并取得了不错的效果
+Learning with dense sampling is proposed by \cite{henriques2012exploiting} and achieve good result.
+% 13年cvpr也认为高维特征配合足够的训练样本对于取得好效果是必要的
+\cite{chenblessing} also found that high dimensional feature need sufficient sample train data
+to obtain good result.
+% 所以我们认为密采样可以显著提高跟踪效果
+So we thought dense sampling can improve tracking result significantly.
+% 与这种方法不同，我们提出的方法
+Different from the FFT method proposed in \cite{henriques2012exploiting},
+we propose a fast feature extraction method for dense sampling.
+
+\subsection{Regression learning and update}
+\end{comment}
+
+\begin{algorithm}
+\caption{Deformable Structure Regression Tracking}
+\label{algo:DSR}
+\begin{algorithmic}
+%\REQUIRE $aaa$
+\ENSURE $(t+1)^{th}$video frame $I_{t+1}$, model $\bm H_t,\bm w$,
+target location $\bm x_{t}^*$
+
+// detection
+\FOR {$i=1,2\dots,9$}
+\STATE $\bm x_{i,t+1}^*=\arg\max_{\bm x\in{\bm X^\gamma}}\bm H\left(\bm\Phi\left(\bm x_i,b_i\right)\right)$
+%(X^{\gamma})\leftarrow I_{t+1}, X^{\gamma}={x||p_{t+1}(x)-p_t(x)|<\gamma}$
+\ENDFOR
+\STATE $\bm x_{t+1}^*=\arg\max{S(\bm x,h)}$ // apply (\ref{eq:detection})
+\begin{comment}
+\STATE $p_{t+1}(x^*), x^*=\arg\max_{x\in X^{\gamma}}{H(x)_{t}=\prod_{k=1}^{M}H(F_{k,t+1})}$
+\IF {$\dfrac{H_{t}-H_{t+1}}{H_{t}}>\delta$}
+\STATE $p_{t+1}(x*)=\oslash$
+\RETURN
+%\ELSE
+%\STATE $p_{t+1}^*(x)\leftarrow x^*$
+\ENDIF
+\end{comment}
+
+// learning
+\STATE $\bm H_{t+1}\leftarrow \bm\Phi_B(\bm x),y$ // apply (\ref{eq:fern})
+\STATE $\bm\Phi_S(h)\leftarrow I_t(\bm x_{t+1}^*),\bm x_{i,t+1}^*$
+%\STATE $\bm w_{t,new}\leftarrow\arg\min \{\sum_{i=1}^N{[S(\bm x,h)-y]^2+\frac{\lambda}{2}||w||^2}\}$
+
+// update
+\STATE $\bm H_{t+1}\leftarrow \gamma \bm H_{t,new}+(1-\gamma)\bm H_{t}$
+\STATE $\bm w_{t+1}\leftarrow(1-\eta\lambda)\bm w_t-\frac{\eta}{N}\sum_{i=1}^N \left\{\left[S\left(\bm x,h\right)-y\right]\cdot \bm z\right\}$
+\begin{comment}
+\STATE $F_{k,t+1}^*(X^{\alpha})\leftarrow I_{t+1}, X^{\alpha}={x||p_{t+1}(x)-p_{t+1}(x^*)|<\alpha}$
+\FORALL {$k\in M$}
+\STATE $H_{k,new}\leftarrow F_k(X^{\alpha}),y(X^{\alpha})$ \\ Eq.6
+\STATE $H_{k,t+1}\leftarrow \lambda H_{k,t}+(1-\lambda)H_{k,new}$
+\ENDFOR
+\end{comment}
+\LASTCON location $\bm x^*, \bm H_{t+1}, \bm w_{t+1}$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{comment}
+
+% 大多数tracking by detection方法都把learning model看作一个classification structure
+%Most tracking-by-detection methods treat learning model as a classification structure \cite{}
+%and train the classifier with example pairs $(\bold{x},y)$, where $y=\pm 1$ is the label.
+% 但这种框架有个严重的问题，正样本的权重一样，但其实际地位并不同，wmil 发现了这点
+%However, equally weighted positive samples $(y=+1)$ confuse the classifier \cite{zhang2012realmil},
+% 负样本的选择则是另一个问题
+%and which negative samples $(y=-1)$ is suitable for the discrimination of the classifier.
+
+% 受struck启发，我们这里把学习的过程看成是regression
+% In this paper, we treat learning process as a regression process.
+% which is similar to \cite{hare2011struck,henriques2012exploiting}.
+% 我们这里利用目标中心和样本间的距离作为样本label 的依据
+%In this paper, we don't need to limit the samples label to binary labels
+%and measure the continuous label with the distance between target center and sample.
+% 这样而来，训练学习的过程就从分类变为了回归
+%so the training classification process become regression.
+% struck使用voc作为损失函数，而csk使用center distance 作为label
+% 结合两样，提出我们的label 的方法。equation
+% 这种continuous label 可以更好的表达样本，从而使预测的结果更接近真实值
+%The continuous labels express the sample responses better than classification structure,
+%and make estimation more accurate.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 接下来介绍continuous label 的设计方案，未写
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% learn的model，目前用的是naive
+%To make full use of the binary feature efficiency and flexibility,
+%we use regression ferns for training and updating the model.
+
+% 对于一组输入特征，我们使用regression fern 得到这组特征属于object 的概率
+For each sample pairs consist of a small set of binary feature and label
+$(f_1(x),f_2(x),...,f_m(x), y)$,
+we construct fern to return the probability that the sample belongs to the object
+that have been learned during training.
+% 多个弱分类器通过朴素贝叶斯联合起来
+%%%%%%%%%%或者使用最大熵极大似然
+These weak responses are then combined in a Naive Bayesian way.
+% 样本是一组fx
+In this work, the sample x is represented by a feature vector
+$f(\bold{x}) = (f_1(x),f_2(x),...,f_N(x))^T$.
+% 弱fern的公式为
+Formally, we are looking for
+\begin{equation}
+\widehat{\bold{p}} = \arg\max_{p} H(f_1,f_2,...,f_N),
+\end{equation}
+where $p \in P$ is 2D position containing the target.
+% Bayes's Formula yields
+% \begin{equation}
+% P(y|f_1,f_2,...,f_N)=\dfrac{P(f_1,f_2,...,f_N|y)P(y)}{P(f_1,f_2,...,f_N)}
+%\end{equation}
+% so our problem reduces to finding
+% \begin{equation}
+% \widehat{\bold{p}} = \arg\max_{p} P(f_1,f_2,...,f_N|y).
+% \end{equation}
+% 由于feature 简单，为了得到好的结果，需要多的投影
+Since features are simple, many random projections is required for accurate regression.
+% 但实际不可操作，要存储2^N
+However， this feature representation in Eq.(xxx) is not feasible
+since it require $2^N$ entries for storing.
+% 解决方案就是假设特征的彼此独立
+One way to compress the representation is to assume independence between features.
+An extreme version is to assume complete independence, that is
+\begin{equation}
+H(f_1,f_2,...,f_N)=\prod_{j=1}^{N}H(f_j)
+\end{equation}
+However this completely ignores the correlation between features.
+To balance the storing requirement and the performance,
+we partition feature into $M$ groups of size $S=\dfrac{N}{M}$.
+These groups are define as \emph{ferns}
+and we compute the probability for features in each fern.
+The conditional probability becomes
+\begin{equation}
+H(f_1,f_2,...,f_N)=\prod_{k=1}^{M}H(F_k)
+\end{equation}
+where $F_k={f_{\sigma(k,1)},f_{\sigma(k,2)},...,f_{\sigma(k,S)}},k=1,...,M$
+represents the $k^{th}$ fern
+and $\sigma(k,j)$ is a random permutation function with range 1,...,N.
+Hence, we follow a Semi-Naive Bayesian \cite{zheng2005comparative} approach
+by modelling only some of the dependencies between features.
+
+In training, we estimate the conditional probabilities $H(F_m)$ for each fern $F_m$,
+as described in Eq.XXX.
+For each fern $F_m$ we write these terms as:
+\begin{equation}
+h_{k}=H(F_m=k)=\dfrac{\sum{y}}{N_k}
+\end{equation}
+Our goal is to minimization the loss function
+\begin{equation}
+\min\sum_{i=1}^{n}(h(F)-y)^2
+\end{equation}
+In practice however, if no training sample evaluates to $k$,
+$N_k$ will be zero.
+This makes the ferns far too discriminative
+because $h_k=0$ will reduce other ferns's influence.
+To over come this problem, an extreme version is
+\begin{equation}
+h_{k}=\dfrac{\sum{y}+1}{N_k+K}
+\end{equation}
+% 接下来说一下ferns的update
+When a new frame come, $h_{k}$ is updated incrementally
+\begin{equation}
+h_{k,t+1}=\lambda h_{k,t}+(1-\lambda)h_k
+\end{equation}
+where $\lambda>0$ is the learning rate for update.
+
+% 确认目标丢失的阈值方法，停止更新model
+To handle the situations if the target is fully occluded we use the following strategy.
+Let $H_{t}$ denote the probability of the object.
+A failure of the tracker is declared if $\dfrac{H_{t}-H_{t+1}}{H_{t}}>\delta$.
+If the tracker failed, we stop updating the learning model.
+This strategy is able to handle the drift by fast motion or full occlusion of the target.
+If the failure is detected, the tracker stops tracking
+and detect the target reoccur in the image.
+% 重检测，这个很关键，利用初始化目标时的hash值
+\subsection{Re-detection}
+% 和目前现有的方法不同，我们提出一种快速的重检测的方法
+Different to methods in existence, we propose an efficient re-detect method when the object lost.
+% 我们存储了目标初始化时候的特征的hash 值，
+We store the hash value of the feature when initialize the object.
+% 当目标丢失时，我们停止更新model，利用这个hash 值在图像中快速搜索目标，
+When the object is lost in the sequence, we stop updating the model,
+and fast extract the image feature hash value.
+% 如果hash值与初始值相等，即认为找到目标，重启tracking
+When the hash value equal to the initialization object hash value,
+we regard as the object reoccur in the image, and restart the tracking.
+% 具体，我们选择了wta-hash 作为feature hash的具体算法,进而提高了检测的效率
+% 不过这个WTA应该是有问题的，细抠的时候再看
+In details, we choose WTA-Hash \cite{yagnik2011power} as our feature value hash method
+and improve the detection efficiency.
+
+\end{comment}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Results
+
+\section{Experiments}
+\label{sec:experiments}
+
+% 介绍一下使用的对比方法，测试序列，实验的重复次数，实验环境（电脑配置）
+% 在这节中，我们把我们的方法和其他几种方法在几个挑战性的视频里进行比较。
+In this section, we compare our tracker with 10 state-of-the-art trackers
+on 18 challenging video clips.
+% 为了公平起见，我使用这些方法的源代码，使用它们默认的参数。
+For fair evaluation, we use the original source codes \cite{li2013survey}
+in which parameters of each method are tuned for best performance.
+% 我们对比的算法有：
+The 10 evaluated trackers are:
+compressive tracking (CT) \cite{zhang2012real},
+structured output tracker (Struck) \cite{hare2011struck},
+%tracking-learning-detection (TLD) \cite{kalal2010pn},
+TLD tracker \cite{kalal2010pn},
+MIL tracker \cite{babenko2011robust},
+circulant structure kernel tracker (CSK) \cite{henriques2012exploiting},
+online Adaboost tracker (OAB) \cite{grabner2006real},
+fragment tracker (Frag) \cite{adam2006robust},
+local-global tracker (LGT) \cite{cehovin2011adaptive},
+visual tracking decomposition (VTD) method \cite{kwon2010visual} and
+distribution field tracker (DFT) \cite{learned2012distribution}.
+%incremental visual tracking (IVT) \cite{ross2008incremental} and
+%L1 tracker (L1T) \cite{mei2011robust}.
+% 因为程序里存在着随机参数，我们重复我们的实验10 次，然后取均值
+The parameters of our tracker are \emph{fixed} for all the experiments.
+Since the algorithms involve some random parameters,
+we repeat the experiment 10 times on each sequence,
+and present the averaged results.
+% 用c++编写的，电脑配置，运行的FPS
+% Implemented in C++, our tracker runs at XXXX frames per second (FPS)
+% on an Intel Core2 Quad 2.50 GHz with 3.49 GB RAM.
+Our proposed algorithm is implemented in C++
+on an AMD A8-5600K 3.60 GHz APU with 8 GB RAM.
+The average running time of our tracker is 27.4 frame per second (FPS).
+% 基本实现了实时，比其他算法要快一些
+
+
+% 我们的代码和使用的视频序列的下载地址为：
+% The source code can be download at http://XXX.
+
+\subsection{Experimental setup}
+
+% 介绍一个各个参数的值，并简单解释一下
+The parameters are set as follows.
+The search radius for detection is set to $\beta=20$
+and we dense sample about 1600 samples.
+We set learning radius $\alpha=\min(w,h)/2$,
+where $w,h$ is the initial size of the object bounding box.
+We use the parameter $\theta={1}/{\alpha}$ in (\ref{eq:confidence_map}).
+Ferns parameters are set to $S=9$, $M_{root}=20$ and $M_{part}=15$.
+In addition, the learning rate $\gamma$ in (\ref{eq:P_update}) and $\lambda$ in (\ref{eq:w_update})
+are set to $0.085$ and $0.075$.
+
+\subsection{Experimental results}
+
+\begin{table*}
+\caption{Center location error(CLE)(in pixels).
+\textcolor[rgb]{1.00,0.00,0.00}{\textbf{Red}} fonts indicate the best performance
+while the second best ones is shown in \textcolor[rgb]{0.00,0.00,1.00}{\textbf{blue}}.}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+Sequence & CT \cite{zhang2012real} & Struck \cite{hare2011struck} & TLD \cite{kalal2010pn}
+& MIL \cite{babenko2011robust} & CSK \cite{henriques2012exploiting}
+& OAB \cite{grabner2006real} & Frag \cite{adam2006robust} & LGT \cite{cehovin2011adaptive}
+& VTD \cite{kwon2010visual} & DFT \cite{learned2012distribution} & DSR \\
+\hline
+faceocc2 & 19 & \textcolor[rgb]{1.00,0.00,0.00}6 & 12 & 14 & 7 & 20 & 16 & 13 & 8 & 8 & \textcolor[rgb]{1.00,0.00,0.00}6\\
+boy & 9 & \textcolor[rgb]{0.00,0.00,1.00}{4} & 5 & 13 & 21 & \textcolor[rgb]{1.00,0.00,0.00}{3} & 40 & 12 & 8 & 107 & \textcolor[rgb]{0.00,0.00,1.00}{4}\\
+football & 12 & 17 & 14 & 12 & 16 & 73 & \textcolor[rgb]{0.00,0.00,1.00}{5} & 13 & 14 & 9 & \textcolor[rgb]{1.00,0.00,0.00}{4}\\
+fish & 11 & \textcolor[rgb]{1.00,0.00,0.00}3 & 7 & 24 & 41 & 87 & 22 & 27 & 17 & 9 & \textcolor[rgb]{0.00,0.00,1.00}6\\
+faceocc1 & 26 & 19 & 27 & 30 & 12 & 25 & \textcolor[rgb]{0.00,0.00,1.00}{11} & 37 & 20 & 24 & \textcolor[rgb]{1.00,0.00,0.00}9\\
+freeman1 & 119 & 14 & 40 & 11 & 127 & 36 & 10 & 56 & 10 & 10 & \textcolor[rgb]{1.00,0.00,0.00}6\\
+skating1 & 151 & 84 & 146 & 140 & \textcolor[rgb]{1.00,0.00,0.00}9 & 44 & 150 & 95 & \textcolor[rgb]{1.00,0.00,0.00}9 & 175 & \textcolor[rgb]{0.00,0.00,1.00}{23}\\
+fleetface & 59 & \textcolor[rgb]{0.00,0.00,1.00}{23} & 41 & 63 & 26 & 52 & 68 & 43 & 46 & 68 & \textcolor[rgb]{1.00,0.00,0.00}{17}\\
+trellis & 42 & \textcolor[rgb]{1.00,0.00,0.00}7 & 31 & 72 & {19} & 98 & 59 & \textcolor[rgb]{0.00,0.00,1.00}{15} & 32 & 45 & 21\\
+david & \textcolor[rgb]{1.00,0.00,0.00}{10} & 43 & 15 & 17 & 18 & 22 & 82 & 27 & {12} & 43 & \textcolor[rgb]{0.00,0.00,1.00}{11}\\
+jumping & 48 & 7 & 7 & 10 & 86 & 46 & \textcolor[rgb]{0.00,0.00,1.00}6 & 26 & 42 & 67 & \textcolor[rgb]{1.00,0.00,0.00}5\\
+girl & 19 & \textcolor[rgb]{1.00,0.00,0.00}3 & 10 & 14 & 19 & 6 & 21 & 15 & 9 & 24 & \textcolor[rgb]{0.00,0.00,1.00}5\\
+sylvester & 9 & \textcolor[rgb]{1.00,0.00,0.00}6 & \textcolor[rgb]{0.00,0.00,1.00}7 & 15 & 10 & 15 & 15 & 15 & 20 & 45 & 8\\
+shaking & 80 & 30 & 37 & 24 & \textcolor[rgb]{0.00,0.00,1.00}{18} & 191 & 192 & 55 & 17 & 27 & \textcolor[rgb]{1.00,0.00,0.00}9\\
+singer2 & 127 & 175 & 58 & \textcolor[rgb]{0.00,0.00,1.00}{23} & 186 & 187 & 89 & 35 & 44 & \textcolor[rgb]{1.00,0.00,0.00}{22} & \textcolor[rgb]{0.00,0.00,1.00}{23}\\
+suv & 72 & 50 & \textcolor[rgb]{1.00,0.00,0.00}{13} & 82 & 576 & 31 & 42 & 68 & 57 & 111 & \textcolor[rgb]{0.00,0.00,1.00}{18}\\
+doll & 22 & 9 & 16 & 17 & 45 & 12 & 14 & 15 & \textcolor[rgb]{0.00,0.00,1.00}{7} & 60 & \textcolor[rgb]{1.00,0.00,0.00}4\\
+cardark & 119 & \textcolor[rgb]{1.00,0.00,0.00}1 & 28 & 44 & 4 & \textcolor[rgb]{0.00,0.00,1.00}3 & 36 & 25 & 17 & 59 & \textcolor[rgb]{0.00,0.00,1.00}3\\
+\hline
+\end{tabular}
+\label{tab:cle}
+\end{table*}
+
+\begin{table*}
+\caption{Success rate(SR)(\%).
+\textcolor[rgb]{1.00,0.00,0.00}{\textbf{Red}} fonts indicate the best performance
+while the second best ones is shown in \textcolor[rgb]{0.00,0.00,1.00}{\textbf{blue}}.}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+Sequence & CT \cite{zhang2012real} & Struck \cite{hare2011struck} & TLD \cite{kalal2010pn}
+& MIL \cite{babenko2011robust} & CSK \cite{henriques2012exploiting}
+& OAB \cite{grabner2006real} & Frag \cite{adam2006robust} & LGT \cite{cehovin2011adaptive}
+& VTD \cite{kwon2010visual} & DFT \cite{learned2012distribution} & DSR \\
+\hline
+faceocc2 & 61 & 87 & 59 & 71 & \textcolor[rgb]{1.00,0.00,0.00}{95} & 60 & 67 & 75 & 83 & 82 & \textcolor[rgb]{0.00,0.00,1.00}{91}\\
+boy & 73 & \textcolor[rgb]{1.00,0.00,0.00}{100} & 86 & 49 & 84 & \textcolor[rgb]{1.00,0.00,0.00}{100} & 45 & 73 & 79 & 48 & \textcolor[rgb]{1.00,0.00,0.00}{100}\\
+football & 76 & 75 & 45 & 74 & 78 & 36 & \textcolor[rgb]{0.00,0.00,1.00}{88} & 78 & 72 & 84 & \textcolor[rgb]{1.00,0.00,0.00}{90}\\
+fish & 78 & \textcolor[rgb]{1.00,0.00,0.00}{100} & 89 & 37 & 4 & 4 & 51 & 45 & 63 & 86 & \textcolor[rgb]{0.00,0.00,1.00}{93}\\
+faceocc1 & 67 & 89 & 73 & 65 & \textcolor[rgb]{1.00,0.00,0.00}{97} & 74 & \textcolor[rgb]{1.00,0.00,0.00}{97} & 73 & 91 & 80 & \textcolor[rgb]{0.00,0.00,1.00}{95}\\
+freeman1 & 11 & 21 & 22 & 13 & 16 & \textcolor[rgb]{0.00,0.00,1.00}{27} & 20 & 23 & 24 & 24 & \textcolor[rgb]{1.00,0.00,0.00}{35}\\
+skating1 & 5 & 38 & 21 & 8 & 63 & 46 & 10 & \textcolor[rgb]{0.00,0.00,1.00}{68} & \textcolor[rgb]{1.00,0.00,0.00}{72} & 16 & \textcolor[rgb]{0.00,0.00,1.00}{68}\\
+fleetface & 53 & 68 & 52 & 48 & \textcolor[rgb]{0.00,0.00,1.00}{69} & 56 & 48 & 53 & 67 & 61 & \textcolor[rgb]{1.00,0.00,0.00}{73}\\
+trellis & 12 & \textcolor[rgb]{1.00,0.00,0.00}{70} & 47 & 6 & 15 & 13 & 37 & \textcolor[rgb]{0.00,0.00,1.00}{63} & 42 & 52 & 53\\
+david & 24 & 27 & \textcolor[rgb]{1.00,0.00,0.00}{88} & 6 & 24 & 14 & 7 & 52 & 36 & 28 & \textcolor[rgb]{0.00,0.00,1.00}{66}\\
+jumping & 1 & \textcolor[rgb]{0.00,0.00,1.00}{93} & 88 & 62 & 5 & 5 & 84 & 9 & 12 & 12 & \textcolor[rgb]{1.00,0.00,0.00}{97}\\
+girl & 10 & \textcolor[rgb]{1.00,0.00,0.00}{92} & 57 & 20 & 42 & \textcolor[rgb]{0.00,0.00,1.00}{91} & 49 & 73 & 50 & 25 & 89\\
+sylvester & 69 & \textcolor[rgb]{1.00,0.00,0.00}{90} & 67 & 43 & 61 & 67 & 64 & \textcolor[rgb]{0.00,0.00,1.00}{76} & 74 & 36 & \textcolor[rgb]{0.00,0.00,1.00}{76}\\
+shaking & 4 & 9 & 36 & 18 & 73 & 1 & 7 & 37 & \textcolor[rgb]{0.00,0.00,1.00}{90} & 80 & \textcolor[rgb]{1.00,0.00,0.00}{93}\\
+singer2 & 1 & 4 & 10 & 47 & 4 & 3 & 20 & \textcolor[rgb]{1.00,0.00,0.00}{65} & 44 & \textcolor[rgb]{0.00,0.00,1.00}{60} & 43\\
+suv & 23 & 57 & \textcolor[rgb]{1.00,0.00,0.00}{91} & 13 & 57 & 76 & 71 & 68 & 48 & 5 & \textcolor[rgb]{0.00,0.00,1.00}{83}\\
+doll & 61 & 39 & 72 & 39 & 33 & 71 & 58 & 23 & \textcolor[rgb]{0.00,0.00,1.00}{74} & 25 & \textcolor[rgb]{1.00,0.00,0.00}{81}\\
+cardark & 0 & \textcolor[rgb]{1.00,0.00,0.00}{100} & 54 & 18 & \textcolor[rgb]{0.00,0.00,1.00}{98} & 94 & 25 & 39 & 68 & 34 & 97\\
+\hline
+\end{tabular}
+\label{tab:sr}
+\end{table*}
+
+% 介绍一下使用的衡量标准，一般就两个success rate & precision rate
+%We use the center location error (CLE) for % and success rate
+%quantitative analysis compared with 10 tracking algorithms.
+%In addition, our another evaluation metric is success rate (SR).
+%The Pascal bounding box overlap score is defined as $score=\frac{|R_g \cap R_t|}{|R_g \cup R_t|}$,
+Two metrics are used for quantitative analysis with 10 tracking algorithms.
+The first evaluation metric is center location error (CLE).
+The other is success rate which is defined as $score=\frac{|R_g \cap R_t|}{|R_g \cup R_t|}$,
+where $R_g$ is the ground truth bounding box and $R_t$ is the tracked bounding box,
+and the result is considered as successful tracked if the $score > 0.5$.
+%which is used as criterion in \cite{everingham2010pascal}.
+
+\subsubsection{Overall performance}
+%\textbf{Overall performance.}
+% 表1显示的是CLE的数据，表2 是SR的曲线(表格引用的格式都不对)
+Table \ref{tab:cle} shows the experimental result in terms of CLE,
+and Tabel \ref{tab:sr} reports SR of various tracking results.
+% 我们的算法取得了第一或者第二的成绩，在大多数的视频序列中。
+Our tracking algorithm achieves the best or second best performance on most test sequences.
+\begin{comment}
+% 为了克服初始化位置和初始化时间对于结果的影响
+% 我们使用CVPR2013-benchmark 作为我们的测试手段
+Further more, in order to overcome the influence of the tracker initialization,
+we use the temporal robustness evaluation (TRE) and spatial robustness evaluation (SRE)
+as quantitative analysis methods which is proposed in \cite{WuLimYang13}.
+% 算法的曲线show在图XXX中
+The precision and success plots are shown in Figure XXX.
+\end{comment}
+% 为了清晰起见，我们这里只展示了我们算法和CT、struck、TLD、MIL、CSK 这几种方法的对比
+% 这几种方法跟我们方法有相似的地方，而且表现很好
+Fig. \ref{fig:screenshots} shows some tracking results of different trackers.
+For the reason of clarity, we just present our tracker compared with
+the CT \cite{zhang2012real}, struck \cite{hare2011struck}, TLD \cite{kalal2010pn}
+,MIL \cite{babenko2011robust}
+and CSK \cite{henriques2012exploiting} methods
+which are similar to our work and perform well.
+
+\begin{figure*}
+\includegraphics[scale=1]{fig_screenshots}
+\caption{Screenshots of tracking results.}
+\label{fig:screenshots}
+\end{figure*}
+
+
+% 初步的结果表明
+% 对于目标快速的移动表现的不好（主要原因是：当目标较小时，我的搜索框太小，好解决，jumping，freeman）
+% 对于目标的突然较大遮挡表现不好（比如行人突然被柱子挡住，目前的思路：靠重检测了）
+% 对于目标的尺度变化表现不好（这个是大多算法的通病，难搞）
+% 室内好于室外，对于汽车的跟踪不好，
+% boy和jumping都有强烈的运动，为何boy很好，jumping不好
+
+\subsubsection{Appearance variation and occlusion}
+%\textbf{Appearance variation and occlusion.}
+%说一下david，等视频的模型变化，occluded face 2, girl等受到了遮挡。（从图4中可以看到）
+%哪些算法表现的好，我们取得了最好的成绩
+%再说一个视频的特点，说一下大多数算法都在这个视频上跪了
+%我们却在这个视频上取得了很好的成绩
+%这可以归功于我们的appearance model，（as discussed in section 3.4）
+There are large appearance variations in the sequences
+such as \emph{faceocc2} ($\#480$, $\#740$ of the \emph{faceocc2} in the Fig. \ref{fig:screenshots}).
+Only Struck, CSK and our DSR adapt to illumination change and pose variation well.
+In addition, Struck and our DSR achieve favorable performance on the \emph{girl} sequence
+due to taking full advantage of context information.
+The \emph{david} sequence contains pose and scale variation.
+Nearly all the other trackers fail to track the target
+except CT and DSR algorithms.
+The favorable performance of our DSR tracker
+is attributed to our deformable structure appearance model (as discussed in Section \ref{subsec:discussion}).
+
+\subsubsection{Background clutter and abrupt motion}
+%\textbf{Background clutter and abrupt motion.}
+%在一些视频中，目标在复杂的背景中快速变化，
+%但是我们依然取得了很好的效果
+%比如什么视频中，只有我的算法和xxx能处理
+%尽管背景和目标信息非常接近，
+%我们利用充足的样本，精确的label得到了一个细致的confidence map，
+%从而避免了这些Distractor,
+%正确的从背景中区分出目标
+The target objects in the \emph{shaking}, \emph{jumping} and \emph{cardark} sequences
+undergo fast movements in the cluttered background.
+However, the proposed DSR achieves the best performances in these sequences.
+For example, in the \emph{cardark} sequence,
+most trackers drift to background except Struck and DSR (See $\#280$, $\#350$ of the \emph{cardark} in the Fig. \ref{fig:screenshots}).
+Although the target and the background have similar appearance,
+the structure relationship is utilized in our algorithm to help distinguish background.
+In addition, large number of dense samples and accurate sample confidence
+are used by our tracker when the learning model updates,
+thereby avoid distraction.
+
+\subsection{Analysis of 2-layer structure model}
+
+% 对我文章的参数进行的实验和调整。
+\begin{table}
+\centering
+\caption{Comparisons of models. $L$ is the layer number,
+$N_p$ is the parts number of the local layer.
+\textcolor[rgb]{1.00,0.00,0.00}{\textbf{Red}} fonts indicate the best performance.}
+\begin{comment}
+\begin{tabular}{*{9}{|c}|}
+  \hline
+  Sequences & \multicolumn{2}{|c|}{$L=1$} & \multicolumn{2}{c|}{$L=2,N_p=4$}
+  & \multicolumn{2}{c|}{$L=2,N_p=9$} & \multicolumn{2}{c|}{$L=2,N_p=16$} \\
+  \cline{2-9}
+%  Sequences & & $L=2,N_p=4$ & $L=2,N_p=9$ & $L=2,N_p=16$\\
+  & CLE & SR & CLE & SR & CLE & SR & CLE & SR \\
+  \hline
+  X & 13.54 & 123.23 & 111.11 & 111.11 & X & X & X & X \\
+  X & 13.54 & 123.23 & 111.11 & 111.11 & X & X & X & X \\
+  X & 13.54 & 123.23 & 111.11 & 111.11 & X & X & X & X \\
+  X & 13.54 & 123.23 & 111.11 & 111.11 & X & X & X & X \\
+  X & 13.54 & 123.23 & 111.11 & 111.11 & X & X & X & X \\
+  X & 13.54 & 123.23 & 111.11 & 111.11 & X & X & X & X \\
+  \hline
+\end{tabular}
+\end{comment}
+\begin{tabular}{|c|c|c|c|c|c|}
+  \hline
+  % after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
+  Sequences &  & david & girl & faceocc2 & doll \\
+  \hline
+  {$L=1$} & CLE & 19 & 18 & 10 & 7 \\
+  {$L=2,N_p=4$} & CLE & 17 & 12 & 9 & 8 \\
+  {$L=2,N_p=9$} & CLE & \textcolor[rgb]{1.00,0.00,0.00}{11} & 5 & \textcolor[rgb]{1.00,0.00,0.00}6 & \textcolor[rgb]{1.00,0.00,0.00}4 \\
+  {$L=2,N_p=16$} & CLE & 12 & \textcolor[rgb]{1.00,0.00,0.00}4 & \textcolor[rgb]{1.00,0.00,0.00}6 & \textcolor[rgb]{1.00,0.00,0.00}4 \\
+  \hline
+  {$L=1$} & SR & 55 & 77 & 79 & 74 \\
+  {$L=2,N_p=4$} & SR & 53 & 82 & 83 & 75 \\
+  {$L=2,N_p=9$} & SR & \textcolor[rgb]{1.00,0.00,0.00}{66} & \textcolor[rgb]{1.00,0.00,0.00}{89} & 91 & 81 \\
+  {$L=2,N_p=16$} & SR & 53 & 88 & \textcolor[rgb]{1.00,0.00,0.00}{92} & \textcolor[rgb]{1.00,0.00,0.00}{83} \\
+  \hline
+\end{tabular}
+\label{tab:comparison}
+\end{table}
+
+In order to study how much gain is obtained by deformable appearance model,
+besides our proposed model (2-layer with $3\times 3$ parts) introduced before,
+we also implemented three other models:
+only root appearance model, 2-layer with $2\times 2$ parts
+and 2-layer with $4\times 4$ parts.
+The comparison of these 4 models are performed on $david$, $girl$, $faceocc2$ and $doll$ sequences.
+Table \ref{tab:comparison} shows the performance of these models.
+It is clear that adding part models improves the performance.
+However,
+%adding more parts give little improvement
+%and increase the computational complexity.
+too many parts will not cause much improvement
+or even increase the computation.
+In conclusion, 2-layer with 9 parts is the best choice for appearance model.
+
+
+% An example of a floating figure using the graphicx package.
+% Note that \label must occur AFTER (or within) \caption.
+% For figures, \caption should occur after the \includegraphics.
+% Note that IEEEtran v1.7 and later has special internal code that
+% is designed to preserve the operation of \label within \caption
+% even when the captionsoff option is in effect. However, because
+% of issues like this, it may be the safest practice to put all your
+% \label just after \caption rather than within \caption{}.
+%
+% Reminder: the "draftcls" or "draftclsnofoot", not "draft", class
+% option should be used if it is desired that the figures are to be
+% displayed while in draft mode.
+%
+%\begin{figure}[!t]
+%\centering
+%\includegraphics[width=2.5in]{myfigure}
+% where an .eps filename suffix will be assumed under latex,
+% and a .pdf suffix will be assumed for pdflatex; or what has been declared
+% via \DeclareGraphicsExtensions.
+%\caption{Simulation Results}
+%\label{fig_sim}
+%\end{figure}
+
+% Note that IEEE typically puts floats only at the top, even when this
+% results in a large percentage of a column being occupied by floats.
+
+
+% An example of a double column floating figure using two subfigures.
+% (The subfig.sty package must be loaded for this to work.)
+% The subfigure \label commands are set within each subfloat command, the
+% \label for the overall figure must come after \caption.
+% \hfil must be used as a separator to get equal spacing.
+% The subfigure.sty package works much the same way, except \subfigure is
+% used instead of \subfloat.
+%
+%\begin{figure*}[!t]
+%\centerline{\subfloat[Case I]\includegraphics[width=2.5in]{subfigcase1}%
+%\label{fig_first_case}}
+%\hfil
+%\subfloat[Case II]{\includegraphics[width=2.5in]{subfigcase2}%
+%\label{fig_second_case}}}
+%\caption{Simulation results}
+%\label{fig_sim}
+%\end{figure*}
+%
+% Note that often IEEE papers with subfigures do not employ subfigure
+% captions (using the optional argument to \subfloat), but instead will
+% reference/describe all of them (a), (b), etc., within the main caption.
+
+
+% An example of a floating table. Note that, for IEEE style tables, the
+% \caption command should come BEFORE the table. Table text will default to
+% \footnotesize as IEEE normally uses this smaller font for tables.
+% The \label must come after \caption as always.
+%
+%\begin{table}[!t]
+%% increase table row spacing, adjust to taste
+%\renewcommand{\arraystretch}{1.3}
+% if using array.sty, it might be a good idea to tweak the value of
+% \extrarowheight as needed to properly center the text within the cells
+%\caption{An Example of a Table}
+%\label{table_example}
+%\centering
+%% Some packages, such as MDW tools, offer better commands for making tables
+%% than the plain LaTeX2e tabular which is used here.
+%\begin{tabular}{|c||c|}
+%\hline
+%One & Two\\
+%\hline
+%Three & Four\\
+%\hline
+%\end{tabular}
+%\end{table}
+
+
+% Note that IEEE does not put floats in the very first column - or typically
+% anywhere on the first page for that matter. Also, in-text middle ("here")
+% positioning is not used. Most IEEE journals/conferences use top floats
+% exclusively. Note that, LaTeX2e, unlike IEEE journals/conferences, places
+% footnotes above bottom floats. This can be corrected via the \fnbelowfloat
+% command of the stfloats package.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Conclusion
+
+\section{Conclusion}
+\label{sec:Conclusion}
+
+In this paper, we propose a real-time robust tracking algorithm with deformable structure regression.
+Two-layer appearance model is proposed
+which is robust to appearance variations of occlusion, pose variations and illumination changes.
+Coupled-layer regression learning model combines global and local information,
+%bridges the divide on background and the target object,
+%get a favorable performance than discriminative classifier.
+prevents drift away caused by noisy background or misaligned samples.
+Numerous experiments with state-of-the-art algorithms on challenging sequences
+demonstrated that the proposed tracker achieves favorable performance
+in terms of accuracy, robustness and speed.
+
+
+
+% conference papers do not normally have an appendix
+
+
+% use section* for acknowledgement
+\section*{Acknowledgment}
+
+The authors thank all researchers who are committed to visual tracking,
+especially those who provide source code.
+
+
+
+
+% trigger a \newpage just before the given reference
+% number - used to balance the columns on the last page
+% adjust value as needed - may need to be readjusted if
+% the document is modified later
+%\IEEEtriggeratref{8}
+% The "triggered" command can be changed if desired:
+%\IEEEtriggercmd{\enlargethispage{-5in}}
+
+% references section
+
+% can use a bibliography generated by BibTeX as a .bbl file
+% BibTeX documentation can be easily obtained at:
+% http://www.ctan.org/tex-archive/biblio/bibtex/contrib/doc/
+% The IEEEtran BibTeX style support page is at:
+% http://www.michaelshell.org/tex/ieeetran/bibtex/
+%\bibliographystyle{IEEEtran}
+% argument is your BibTeX string definitions and bibliography database(s)
+%\bibliography{IEEEabrv,../bib/paper}
+%
+% <OR> manually copy in the resultant .bbl file
+% set second argument of \begin to the number of references
+% (used to reserve space for the reference number labels box)
+%\begin{thebibliography}{1}
+
+%\bibitem{IEEEhowto:kopka}
+%H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
+%  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
+
+%\end{thebibliography}
+
+\bibliographystyle{IEEEtran}
+\bibliography{ref}
+
+
+% that's all folks
+\end{document}
+
+

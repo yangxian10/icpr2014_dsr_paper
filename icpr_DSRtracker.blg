@@ -1,0 +1,28 @@
+This is BibTeX, Version 0.99dThe top-level auxiliary file: icpr_DSRtracker.aux
+The style file: IEEEtran.bst
+Database file #1: ref.bib
+You're missing a field name---line 27 of file ref.bib
+ : 
+ : %  author        = "Zhang, Kaihua and Zhang, Lei and Yang, Ming-Hsuan",
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Warning--string name "ieee_j_pami" is undefined
+--line 79 of file ref.bib
+Warning--string name "ieee_j_pami" is undefined
+--line 119 of file ref.bib
+Warning--string name "ieee_j_pami" is undefined
+--line 202 of file ref.bib
+Warning--string name "ieee_j_pami" is undefined
+--line 226 of file ref.bib
+-- IEEEtran.bst version 1.13 (2008/09/30) by Michael Shell.
+-- http://www.michaelshell.org/tex/ieeetran/bibtex/
+-- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+Warning--empty journal in babenko2011robust
+Warning--empty journal in felzenszwalb2010object
+Warning--empty journal in calonder2012brief
+Warning--empty journal in ozuysal2010fast
+Warning--empty journal in chenblessing
+Warning--empty year in chenblessing
+
+Done.
+(There was 1 error message)
